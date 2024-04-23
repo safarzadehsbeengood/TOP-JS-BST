@@ -1,22 +1,21 @@
-import BinarySearchTree from './BST.js';
-
+import BinarySearchTree from "./BST.js";
 
 // create a new tree
 const tree = new BinarySearchTree();
 
 function prettyPrintArray(arr) {
-    let str = "";
-    for (let i = 0; i < arr.length; i++) {
-        str += arr[i];
-        if (i < arr.length - 1) str += " -> ";
-    }
-    return str
+  let str = "";
+  for (let i = 0; i < arr.length; i++) {
+    str += arr[i];
+    if (i < arr.length - 1) str += " -> ";
+  }
+  return str;
 }
 
 // populate array with 100 random numbers < 100
 let arr = [];
 for (let i = 0; i < 10; i++) {
-    arr.push(Math.floor(Math.random() * 100));
+  arr.push(Math.floor(Math.random() * 100));
 }
 
 // build the tree and print it
@@ -34,7 +33,7 @@ console.log(`Inorder: ${prettyPrintArray(tree.inOrder())}\n`);
 
 // add 5 more nodes with values > 100 to unbalance the tree
 for (let i = 0; i < 5; i++) {
-    tree.insert(Math.floor(Math.random() * 100) + 100);
+  tree.insert(Math.floor(Math.random() * 100) + 100);
 }
 
 // display new tree
