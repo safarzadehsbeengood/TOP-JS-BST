@@ -23,7 +23,7 @@ tree.buildTree(arr);
 tree.prettyPrint();
 
 // check if balanced on build
-console.log(`Balanced : ${tree.isBalanced()}`); // true
+console.log(`\nBalanced : ${tree.isBalanced()}\n`); // true
 
 // display traversals
 console.log(`Level Order: ${prettyPrintArray(tree.levelOrder())}\n`);
