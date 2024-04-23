@@ -1,0 +1,171 @@
+import Node from "./Node.js";
+
+function BinarySearchTree() {
+
+  // declare the root and getter function
+  let _root = null;
+  const root = () => _root;
+
+  // insert a new value into the tree
+
+  const insert = (val) => {
+    const newNode = Node(val);
+    // if the tree is empty, this node becomes the root
+    if (!_root) {
+      _root = newNode;
+      return;
+    } else {
+      // find the spot for this new value
+      let curr = _root;
+      while (curr) {
+        if (val === curr.val) return; // if the value is in the tree, return
+      // else, keep going
+      if (val > curr.val) {
+        if (!curr.right) {
+          curr.right = newNode;
+          return;
+        }
+        curr = curr.right;
+      } else {
+        if (!curr.left) {
+          curr.left = newNode;
+          return;
+        }
+        curr = curr.left;
+      }
+    }
+    }
+  };
+
+
+  // build the tree from an array
+
+  const buildTree = (arr) => {
+      arr = [...new Set(arr)];
+      arr.sort((a, b) => a - b);
+      return _root = _buildTreeHelper(arr, 0, arr.length-1);
+  };
+
+  const _buildTreeHelper = (arr, start, end) => {
+    if (start > end) return null;
+    const mid = parseInt((start+end) / 2);
+    const newNode = Node(arr[mid]);
+    newNode.left = _buildTreeHelper(arr, start, mid-1);
+    newNode.right = _buildTreeHelper(arr, mid+1, end);
+    return newNode;
+  }
+
+  // util for pretty printing the tree
+
+  const prettyPrint = (node = _root, prefix = "", isLeft = true) => {
+    if (node === null) {
+      return;
+    }
+    if (node.right !== null) {
+      prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.val}`);
+    if (node.left !== null) {
+      prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+  };
+
+  // delete a node in the tree
+
+  const deleteItem = function(val) {
+    if (!_root) return null;
+    _root = _deleteHelper(_root, val);
+  };
+
+  const _deleteHelper = function(node, val) {
+    if (!node) return null;
+    if (val < node.val) {
+      node.left = _deleteHelper(node.left, val);
+    } else if (val > node.val) {
+      node.right = _deleteHelper(node.right, val);
+    } else {
+      // if the node has no children
+      if (!node.left && !node.right) {
+        node = null;
+      } else if (!node.left) {
+        node = node.right;
+      } else if (!node.right) {
+        node = node.left;
+      } else {
+        const minNode = _findMin(node.right);
+        node.val = minNode.val;
+        node.right = _deleteHelper(node.right, minNode.val);
+      }
+    }
+    return node;
+  };
+  
+  const _findMin = function(node) {
+    while (node.left) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  // find a node in the tree with the given value
+
+  const find = function(val) {
+    let curr = _root;
+    while (curr) {
+      if (val === curr.val) return curr;
+      if (val > curr.val) {
+        curr = curr.right;
+      } else {
+        curr = curr.left;
+      }
+    }
+    return null;
+  }
+
+  // level order traversal w/ callback
+
+  const levelOrder = function(callback) {
+    let height = this.height();
+    for (let i = 1; i <= height; i++) {
+      _levelOrderHelper(_root, i, callback);
+    }
+  }
+
+  const _levelOrderHelper = function(node, level, callback) {
+    if (!node) return;
+    if (level === 1) {
+      callback(node);
+    } else if (level > 1) {
+      _levelOrderHelper(node.left, level-1, callback);
+      _levelOrderHelper(node.right, level-1, callback);
+    }
+  }
+
+  // height of the tree
+
+  const height = function(root = _root) {
+    if (!root) return 0;
+    const left_height = height(root.left);
+    const right_height = height(root.right);
+    return Math.max(left_height, right_height) + 1;
+  }
+
+  return {
+    root,
+    buildTree,
+    insert,
+    prettyPrint,
+    deleteItem,
+    find,
+    height,
+    levelOrder,
+  };
+}
+
+const tree = new BinarySearchTree();
+tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.prettyPrint();
+console.log();
+tree.levelOrder((node) => node.val += 1);
+tree.prettyPrint();
+
