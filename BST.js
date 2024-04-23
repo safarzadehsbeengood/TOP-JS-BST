@@ -258,10 +258,4 @@ function BinarySearchTree() {
   };
 }
 
-const tree = new BinarySearchTree();
-tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-tree.prettyPrint();
-console.log();
-console.log(tree.inOrder());
-tree.prettyPrint();
-
+export default BinarySearchTree;
