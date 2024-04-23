@@ -124,10 +124,14 @@ function BinarySearchTree() {
 
   // level order traversal w/ callback
 
-  const levelOrder = function(callback) {
+  const levelOrder = function(callback = undefined) {
+    let arr = [];
     let height = this.height();
     for (let i = 1; i <= height; i++) {
-      _levelOrderHelper(_root, i, callback);
+      _levelOrderHelper(_root, i, callback ? callback : (node) => arr.push(node.val));
+    }
+    if (!callback) {
+      return arr;
     }
   }
 
@@ -141,6 +145,56 @@ function BinarySearchTree() {
     }
   }
 
+  // inorder traversal w/ callback
+
+  const inOrder = function(callback = undefined) {
+    let arr = [];
+    _inOrderHelper(_root, callback ? callback : (node) => arr.push(node.val));
+    if (!callback) {
+      return arr;
+    }
+  }
+
+  const _inOrderHelper = function(node, callback) {
+    if (!node) return;
+    _inOrderHelper(node.left, callback);
+    callback(node);
+    _inOrderHelper(node.right, callback);
+  }
+
+  // preorder traversal w/ callback
+  const preOrder = function(callback = undefined) {
+    let arr = [];
+    _preOrderHelper(_root, callback ? callback : (node) => arr.push(node.val));
+    if (!callback) {
+      return arr;
+    }
+  }
+
+  const _preOrderHelper = function(node, callback) {
+    if (!node) return;
+    callback(node);
+    _preOrderHelper(node.left, callback);
+    _preOrderHelper(node.right, callback);
+  }
+
+  // postorder traversal w/ callback
+
+  const postOrder = function(callback = undefined) {
+    let arr = [];
+    _postOrderHelper(_root, callback ? callback : (node) => arr.push(node.val));
+    if (!callback) {
+      return arr;
+    }
+  }
+
+  const _postOrderHelper = function(node, callback) {
+    if (!node) return;
+    _postOrderHelper(node.left, callback);
+    _postOrderHelper(node.right, callback);
+    callback(node);
+  }
+
   // height of the tree
 
   const height = function(root = _root) {
@@ -148,6 +202,42 @@ function BinarySearchTree() {
     const left_height = height(root.left);
     const right_height = height(root.right);
     return Math.max(left_height, right_height) + 1;
+  }
+
+  // depth of a node in the tree
+
+  const depth = function(node) {
+    let curr = _root;
+    let depth = 0;
+    while (curr) {
+      if (node.val === curr.val) return depth;
+      if (node.val > curr.val) {
+        curr = curr.right;
+      } else {
+        curr = curr.left;
+      }
+      depth++;
+    }
+    return -1;
+  }
+
+  // check if the tree is balanced
+
+  const isBalanced = function() {
+    return _isBalancedHelper(_root);
+  }
+
+  const _isBalancedHelper = function(node) {
+    if (!node) return true;
+    const left_height = height(node.left);
+    const right_height = height(node.right);
+    return Math.abs(left_height - right_height) <= 1 && _isBalancedHelper(node.left) && _isBalancedHelper(node.right);
+  }
+
+  // rebalance the tree 
+  const rebalance = function() {
+    let arr = this.inOrder();
+    this.buildTree(arr);
   }
 
   return {
@@ -158,7 +248,13 @@ function BinarySearchTree() {
     deleteItem,
     find,
     height,
+    depth,
     levelOrder,
+    inOrder,
+    preOrder,
+    postOrder,
+    isBalanced,
+    rebalance
   };
 }
 
@@ -166,6 +262,6 @@ const tree = new BinarySearchTree();
 tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 tree.prettyPrint();
 console.log();
-tree.levelOrder((node) => node.val += 1);
+console.log(tree.inOrder());
 tree.prettyPrint();
 
